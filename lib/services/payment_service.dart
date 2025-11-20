@@ -1,7 +1,6 @@
 // lib/services/payment_service.dart
 import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:dio/dio.dart';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/foundation.dart';
 
@@ -9,7 +8,6 @@ import 'package:flutter/foundation.dart';
 /// Обновлено для стандартов 2025
 class PaymentService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final Dio _dio = Dio();
 
   // API конфигурация (замените на реальные ключи)
   static const String PAYME_MERCHANT_ID = 'YOUR_PAYME_MERCHANT_ID';

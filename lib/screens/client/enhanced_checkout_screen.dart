@@ -41,7 +41,7 @@ class _EnhancedCheckoutScreenState extends State<EnhancedCheckoutScreen>
 
   double? _selectedLat;
   double? _selectedLng;
-  String? _selectedAddress;
+  // String? _selectedAddress; // Not used, address stored in _addressController
 
   // Restaurant coordinates (replace with actual)
   final double _restaurantLat = 41.2995;
@@ -133,7 +133,6 @@ class _EnhancedCheckoutScreenState extends State<EnhancedCheckoutScreen>
         final address =
             '${placemark.street}, ${placemark.subLocality}, ${placemark.locality}';
         setState(() {
-          _selectedAddress = address;
           _addressController.text = address;
           _isLoadingLocation = false;
         });
@@ -159,7 +158,6 @@ class _EnhancedCheckoutScreenState extends State<EnhancedCheckoutScreen>
       setState(() {
         _selectedLat = result['latitude'];
         _selectedLng = result['longitude'];
-        _selectedAddress = result['address'];
         _addressController.text = result['address'];
       });
     }

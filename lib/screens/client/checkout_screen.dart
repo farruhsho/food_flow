@@ -218,62 +218,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> with SingleTickerProvid
     );
   }
 
-  void _showSuccessDialog(String orderId) {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: const BoxDecoration(
-                color: Colors.green,
-                shape: BoxShape.circle,
-              ),
-              child: const Icon(Icons.check, color: Colors.white, size: 60),
-            ),
-            const SizedBox(height: 24),
-            const Text(
-              'Buyurtma qabul qilindi!',
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 12),
-            Text(
-              'Buyurtma #${orderId.substring(0, 8).toUpperCase()}',
-              style: const TextStyle(fontSize: 16, color: Colors.grey),
-            ),
-            const SizedBox(height: 8),
-            const Text(
-              'Buyurtmangiz qabul qilindi va tez orada tayyorlanadi',
-              style: TextStyle(fontSize: 14, color: Colors.grey),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 24),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context); // Close dialog
-                  Navigator.pop(context); // Go back to previous screen
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFFF6B35),
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                ),
-                child: const Text('OK', style: TextStyle(fontSize: 16)),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

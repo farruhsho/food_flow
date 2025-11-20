@@ -718,50 +718,6 @@ class _AdminHomeState extends State<AdminHome> with SingleTickerProviderStateMix
     return const MenuManagementScreen();
   }
 
-  Widget _buildStatisticCard(String title, String value, IconData icon, Color color) {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [color.withValues(alpha: 0.8), color],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: color.withValues(alpha: 0.3),
-            blurRadius: 10,
-            offset: const Offset(0, 5),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Icon(icon, color: Colors.white, size: 32),
-          const SizedBox(height: 16),
-          Text(
-            value,
-            style: const TextStyle(
-              fontSize: 28,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            title,
-            style: const TextStyle(
-              fontSize: 14,
-              color: Colors.white70,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   void _showCancelOrderDialog(BuildContext context, String orderId) {
     showDialog(
       context: context,

@@ -11,7 +11,7 @@ class FinancialReportsScreen extends StatefulWidget {
 
 class _FinancialReportsScreenState extends State<FinancialReportsScreen> {
   final _firestore = FirebaseFirestore.instance;
-  DateTime _selectedDate = DateTime.now();
+  // DateTime _selectedDate = DateTime.now(); // Reserved for future date picker
   String _selectedPeriod = 'today';
 
   @override
