@@ -505,7 +505,7 @@ class _ManageUsersScreenState extends State<ManageUsersScreen> with SingleTicker
                     if (user.phone != null) Text('Tel: ${user.phone}'),
                     Chip(
                       label: Text(_getRoleText(user.role)),
-                      backgroundColor: _getRoleColor(user.role).withOpacity(0.2),
+                      backgroundColor: _getRoleColor(user.role).withValues(alpha: 0.2),
                       labelStyle: TextStyle(color: _getRoleColor(user.role)),
                     ),
                   ],

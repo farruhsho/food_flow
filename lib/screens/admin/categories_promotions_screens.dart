@@ -50,7 +50,7 @@ class CategoriesScreen extends StatelessWidget {
                 margin: const EdgeInsets.only(bottom: 12),
                 child: ListTile(
                   leading: CircleAvatar(
-                    backgroundColor: Colors.orange.withOpacity(0.2),
+                    backgroundColor: Colors.orange.withValues(alpha: 0.2),
                     child: Icon(
                       _getCategoryIcon(category['icon'] ?? 'restaurant'),
                       color: Colors.orange,
@@ -251,7 +251,7 @@ class PromotionsScreen extends StatelessWidget {
                   leading: Container(
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      color: Colors.red.withOpacity(0.1),
+                      color: Colors.red.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: const Icon(Icons.local_offer, color: Colors.red),
@@ -399,7 +399,7 @@ class TablesManagementScreen extends StatelessWidget {
                   onTap: () => _showTableDetails(context, tableId, table),
                   child: Container(
                     decoration: BoxDecoration(
-                      color: statusColor.withOpacity(0.1),
+                      color: statusColor.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Column(
@@ -503,7 +503,7 @@ class FinancialReportsScreen extends StatelessWidget {
         leading: Container(
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            color: color.withOpacity(0.1),
+            color: color.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(8),
           ),
           child: Icon(icon, color: color),

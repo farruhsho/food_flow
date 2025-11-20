@@ -147,8 +147,8 @@ class _InventoryScreenState extends State<InventoryScreen> {
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
             color: isLowStock
-                ? Colors.red.withOpacity(0.1)
-                : Colors.green.withOpacity(0.1),
+                ? Colors.red.withValues(alpha: 0.1)
+                : Colors.green.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(12),
           ),
           child: Icon(
@@ -177,8 +177,8 @@ class _InventoryScreenState extends State<InventoryScreen> {
                   ),
                   decoration: BoxDecoration(
                     color: isLowStock
-                        ? Colors.red.withOpacity(0.2)
-                        : Colors.green.withOpacity(0.2),
+                        ? Colors.red.withValues(alpha: 0.2)
+                        : Colors.green.withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Text(

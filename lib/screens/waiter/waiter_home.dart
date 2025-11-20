@@ -173,7 +173,7 @@ class _WaiterHomeState extends State<WaiterHome> with SingleTickerProviderStateM
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [
-                statusColor.withOpacity(0.1),
+                statusColor.withValues(alpha: 0.1),
                 Colors.white,
               ],
             ),
@@ -184,7 +184,7 @@ class _WaiterHomeState extends State<WaiterHome> with SingleTickerProviderStateM
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: statusColor.withOpacity(0.2),
+                  color: statusColor.withValues(alpha: 0.2),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(Icons.table_restaurant, size: 32, color: statusColor),
@@ -295,7 +295,7 @@ class _WaiterHomeState extends State<WaiterHome> with SingleTickerProviderStateM
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: _getStatusColor(order.status).withOpacity(0.1),
+                      color: _getStatusColor(order.status).withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Icon(
@@ -316,7 +316,7 @@ class _WaiterHomeState extends State<WaiterHome> with SingleTickerProviderStateM
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                           decoration: BoxDecoration(
-                            color: _getStatusColor(order.status).withOpacity(0.1),
+                            color: _getStatusColor(order.status).withValues(alpha: 0.1),
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: Text(
@@ -482,7 +482,7 @@ class _WaiterHomeState extends State<WaiterHome> with SingleTickerProviderStateM
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: isToday ? Colors.orange.withOpacity(0.1) : Colors.grey.withOpacity(0.1),
+                    color: isToday ? Colors.orange.withValues(alpha: 0.1) : Colors.grey.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Icon(
@@ -510,7 +510,7 @@ class _WaiterHomeState extends State<WaiterHome> with SingleTickerProviderStateM
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   decoration: BoxDecoration(
-                    color: _getBookingStatusColor(status).withOpacity(0.1),
+                    color: _getBookingStatusColor(status).withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
@@ -643,7 +643,7 @@ class _WaiterHomeState extends State<WaiterHome> with SingleTickerProviderStateM
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: color.withOpacity(0.1),
+                color: color.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Icon(icon, color: color, size: 32),

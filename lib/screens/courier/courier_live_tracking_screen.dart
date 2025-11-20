@@ -255,7 +255,7 @@ class _CourierLiveTrackingScreenState extends State<CourierLiveTrackingScreen> {
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: isActive ? color.withOpacity(0.1) : Colors.grey.shade100,
+          color: isActive ? color.withValues(alpha: 0.1) : Colors.grey.shade100,
           border: Border.all(
             color: isActive ? color : Colors.grey.shade300,
             width: 2,

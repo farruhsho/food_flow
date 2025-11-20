@@ -5,7 +5,7 @@ class Dish extends Equatable {
   final String name;
   final String description;
   final double price;
-  final String imageUrl;
+  final String? imageUrl; // Nullable to handle missing images
   final List<String> allergens;
   final List<String> suitableFor;
   final String category;
@@ -18,7 +18,7 @@ class Dish extends Equatable {
     required this.name,
     required this.description,
     required this.price,
-    required this.imageUrl,
+    this.imageUrl,
     this.allergens = const [],
     this.suitableFor = const [],
     this.category = 'Umumiy',
@@ -33,7 +33,7 @@ class Dish extends Equatable {
       name: data['name'] ?? '',
       description: data['description'] ?? '',
       price: (data['price'] ?? 0.0).toDouble(),
-      imageUrl: data['imageUrl'] ?? '',
+      imageUrl: data['imageUrl'], // Properly handle null
       allergens: List<String>.from(data['allergens'] ?? []),
       suitableFor: List<String>.from(data['suitableFor'] ?? []),
       category: data['category'] ?? 'Umumiy',
