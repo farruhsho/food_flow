@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "135333269617",
+    "firebase_url": "https://foodflow-78f01-default-rtdb.firebaseio.com",
+    "project_id": "foodflow-78f01",
+    "storage_bucket": "foodflow-78f01.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:135333269617:android:e2bc59e8d9d25fa47e0bd0",
+        "android_client_info": {
+          "package_name": "com.example.food_flow"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDVN_Rg_VTWtkPLe_1kZtQy1kk09LMAAiE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
