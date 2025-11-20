@@ -148,7 +148,7 @@ class _EnhancedCheckoutScreenState extends State<EnhancedCheckoutScreen>
     final result = await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => MapAddressPicker screen(
+        builder: (context) => MapAddressPickerScreen(
           initialLat: _selectedLat ?? _restaurantLat,
           initialLng: _selectedLng ?? _restaurantLng,
         ),
@@ -223,7 +223,7 @@ class _EnhancedCheckoutScreenState extends State<EnhancedCheckoutScreen>
     if (_selectedOrderType != 'delivery') return 0;
 
     final distance = _calculateDistance();
-    const baseF ee = 5000.0;
+    const baseFee = 5000.0;
     const perKmFee = 2000.0;
 
     if (distance <= 2.0) return baseFee;

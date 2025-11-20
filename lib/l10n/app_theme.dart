@@ -267,7 +267,7 @@ class AppTheme {
     iconTheme: const IconThemeData(color: darkText),
 
     // Bottom Navigation Bar Theme
-    bottomNavigationBarThemeData: const BottomNavigationBarThemeData(
+    bottomNavigationBarTheme: const BottomNavigationBarThemeData(
       selectedItemColor: primaryColor,
       unselectedItemColor: darkTextSecondary,
       showUnselectedLabels: true,
