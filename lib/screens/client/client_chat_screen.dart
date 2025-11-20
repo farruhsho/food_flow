@@ -96,13 +96,24 @@ class _ClientChatScreenState extends State<ClientChatScreen> {
     return Align(
       alignment: message.isFromUser ? Alignment.centerRight : Alignment.centerLeft,
       child: Container(
-        margin: const EdgeInsets.all(8),
-        padding: const EdgeInsets.all(12),
+        constraints: BoxConstraints(
+          maxWidth: MediaQuery.of(context).size.width * 0.75,
+        ),
+        margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
         decoration: BoxDecoration(
           color: message.isFromUser ? Colors.orange : Colors.grey.shade200,
           borderRadius: BorderRadius.circular(12),
         ),
-        child: Text(message.text, style: TextStyle(color: message.isFromUser ? Colors.white : Colors.black)),
+        child: Text(
+          message.text,
+          style: TextStyle(
+            color: message.isFromUser ? Colors.white : Colors.black,
+            fontSize: 14,
+          ),
+          softWrap: true,
+          overflow: TextOverflow.visible,
+        ),
       ),
     );
   }

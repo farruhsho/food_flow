@@ -551,11 +551,22 @@ class _CheckoutScreenState extends State<CheckoutScreen> with SingleTickerProvid
                       child: const Icon(Icons.restaurant, color: Colors.grey),
                     ),
             ),
-            title: Text(item.name, style: const TextStyle(fontWeight: FontWeight.w600)),
-            subtitle: Text('${item.quantity} x ${item.price.toStringAsFixed(0)} so\'m'),
+            title: Text(
+              item.name,
+              style: const TextStyle(fontWeight: FontWeight.w600),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+            subtitle: Text(
+              '${item.quantity} x ${item.price.toStringAsFixed(0)} so\'m',
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
             trailing: Text(
               '${(item.price * item.quantity).toStringAsFixed(0)} so\'m',
               style: const TextStyle(fontWeight: FontWeight.bold, color: Color(0xFFFF6B35)),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
           );
         },

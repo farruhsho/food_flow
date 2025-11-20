@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -6,9 +7,13 @@ import 'chat_event.dart';
 import 'chat_state.dart';
 
 class ChatBloc extends Bloc<ChatEvent, ChatState> {
+  StreamSubscription<QuerySnapshot>? _messagesSubscription;
+
   ChatBloc() : super(const ChatLoading()) {
     on<LoadChatHistory>(_onLoadChatHistory);
     on<SendMessage>(_onSendMessage);
+    on<MessagesUpdated>(_onMessagesUpdated);
+    on<MessagesError>(_onMessagesError);
   }
 
   Future<void> _onLoadChatHistory(
@@ -21,22 +26,39 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         return;
       }
 
-      final query = await FirebaseFirestore.instance
+      // Cancel previous subscription if exists
+      await _messagesSubscription?.cancel();
+
+      // Listen to messages in real-time
+      _messagesSubscription = FirebaseFirestore.instance
           .collection('chats')
           .doc(userId)
           .collection('messages')
           .orderBy('timestamp', descending: true)
           .limit(50)
-          .get();
-
-      final messages = query.docs
-          .map((doc) => Message.fromFirestore(doc.data(), doc.id))
-          .toList();
-
-      emit(ChatLoaded(messages));
+          .snapshots()
+          .listen(
+        (snapshot) {
+          final messages = snapshot.docs
+              .map((doc) => Message.fromFirestore(doc.data(), doc.id))
+              .toList();
+          add(MessagesUpdated(messages));
+        },
+        onError: (error) {
+          add(MessagesError('Chat tarixini yuklashda xato: $error'));
+        },
+      );
     } catch (e) {
       emit(ChatError('Chat tarixini yuklashda xato: $e'));
     }
+  }
+
+  void _onMessagesUpdated(MessagesUpdated event, Emitter<ChatState> emit) {
+    emit(ChatLoaded(event.messages));
+  }
+
+  void _onMessagesError(MessagesError event, Emitter<ChatState> emit) {
+    emit(ChatError(event.error));
   }
 
   Future<void> _onSendMessage(
@@ -75,10 +97,16 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
           .doc(aiMessage.id)
           .set(aiMessage.toFirestore());
 
-      add(const LoadChatHistory());
+      // No need to manually reload - real-time listener will update automatically
     } catch (e) {
       emit(ChatError('Xabar yuborishda xato: $e'));
     }
+  }
+
+  @override
+  Future<void> close() {
+    _messagesSubscription?.cancel();
+    return super.close();
   }
 
   String _generateAIResponse(String userMessage) {

@@ -7,6 +7,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'firebase_options.dart';
 import 'blocs/auth_bloc.dart';
+import 'blocs/auth_event.dart';
 import 'blocs/auth_state.dart';
 import 'blocs/cart_bloc.dart';
 import 'blocs/menu_bloc.dart';
@@ -57,7 +58,14 @@ class MyApp extends StatelessWidget {
         builder: (context, languageProvider, child) {
           return MultiBlocProvider(
             providers: [
-              BlocProvider(create: (context) => AuthBloc()),
+              BlocProvider(
+                create: (context) {
+                  final authBloc = AuthBloc();
+                  // Check auth status on app start for auto-login
+                  authBloc.add(const CheckAuthStatus());
+                  return authBloc;
+                },
+              ),
               BlocProvider(create: (context) => CartBloc()),
               BlocProvider(create: (context) => MenuBloc()),
               BlocProvider(create: (context) => OrderBloc()),

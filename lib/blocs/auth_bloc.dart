@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:google_sign_in/google_sign_in.dart';
 import '../models/user.dart';
+import '../services/auth_storage_service.dart';
 import 'auth_event.dart';
 import 'auth_state.dart';
 
@@ -10,6 +11,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final auth.FirebaseAuth _firebaseAuth = auth.FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
+  final AuthStorageService _authStorage = AuthStorageService();
 
   AuthBloc() : super(const AuthInitial()) {
     on<CheckAuthStatus>(_onCheckAuthStatus);
@@ -27,15 +29,47 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       ) async {
     emit(const AuthLoading());
     try {
-      final user = _firebaseAuth.currentUser;
-      if (user != null) {
-        final userDoc = await _firestore.collection('users').doc(user.uid).get();
-        if (userDoc.exists) {
-          final userData = User.fromFirestore(userDoc.data()!, user.uid);
-          emit(AuthAuthenticated(user: userData));
-        } else {
-          emit(const AuthUnauthenticated());
+      // First check if user is logged in via Firebase Auth
+      var user = _firebaseAuth.currentUser;
+
+      // If not logged in with Firebase, check saved credentials
+      if (user == null) {
+        final isLoggedIn = await _authStorage.isLoggedIn();
+        if (isLoggedIn) {
+          final savedData = await _authStorage.getSavedUserData();
+          if (savedData != null) {
+            // Try to fetch user data from Firestore using saved userId
+            final userDoc = await _firestore
+                .collection('users')
+                .doc(savedData['userId'])
+                .get();
+
+            if (userDoc.exists) {
+              final userData = User.fromFirestore(
+                userDoc.data()!,
+                savedData['userId'],
+              );
+              emit(AuthAuthenticated(user: userData));
+              return;
+            }
+          }
         }
+        emit(const AuthUnauthenticated());
+        return;
+      }
+
+      // User is logged in with Firebase, get their data
+      final userDoc = await _firestore.collection('users').doc(user.uid).get();
+      if (userDoc.exists) {
+        final userData = User.fromFirestore(userDoc.data()!, user.uid);
+        // Save user data for auto-login
+        await _authStorage.saveUserData(
+          userId: userData.id,
+          email: userData.email,
+          role: userData.role,
+          rememberMe: true,
+        );
+        emit(AuthAuthenticated(user: userData));
       } else {
         emit(const AuthUnauthenticated());
       }
@@ -65,6 +99,15 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           userDoc.data()!,
           userCredential.user!.uid,
         );
+
+        // Save user data for auto-login
+        await _authStorage.saveUserData(
+          userId: userData.id,
+          email: userData.email,
+          role: userData.role,
+          rememberMe: true,
+        );
+
         emit(AuthAuthenticated(user: userData));
       } else {
         emit(const AuthError(message: 'Foydalanuvchi topilmadi'));
@@ -122,6 +165,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
       // Send email verification
       await userCredential.user!.sendEmailVerification();
+
+      // Save user data for auto-login
+      await _authStorage.saveUserData(
+        userId: userData.id,
+        email: userData.email,
+        role: userData.role,
+        rememberMe: true,
+      );
 
       emit(AuthAuthenticated(user: userData));
     } on auth.FirebaseAuthException catch (e) {
@@ -188,6 +239,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             .set(userData.toFirestore());
       }
 
+      // Save user data for auto-login
+      await _authStorage.saveUserData(
+        userId: userData.id,
+        email: userData.email,
+        role: userData.role,
+        rememberMe: true,
+      );
+
       emit(AuthAuthenticated(user: userData));
     } catch (e) {
       emit(AuthError(message: 'Google orqali kirish xatosi: $e'));
@@ -199,6 +258,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       Emitter<AuthState> emit,
       ) async {
     try {
+      // Clear saved user data
+      await _authStorage.clearUserData();
+
       await _googleSignIn.signOut();
       await _firebaseAuth.signOut();
       emit(const AuthUnauthenticated());
