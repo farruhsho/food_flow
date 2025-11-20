@@ -7,7 +7,6 @@ import '../../blocs/cart_event.dart';
 import '../../blocs/cart_state.dart';
 import '../../models/cart_item.dart';
 import '../../models/order.dart' as order_model;
-import 'order_success_screen.dart';
 
 class CheckoutScreen extends StatefulWidget {
   const CheckoutScreen({super.key});
@@ -143,29 +142,41 @@ class _CheckoutScreenState extends State<CheckoutScreen> with SingleTickerProvid
 
       final orderId = FirebaseFirestore.instance.collection('orders').doc().id;
 
+      // Convert CartItems to Map format
+      final itemsMap = cartItems.map((item) => {
+        'dishId': item.dishId,
+        'name': item.name,
+        'price': item.price,
+        'quantity': item.quantity,
+        'imageUrl': item.imageUrl,
+      }).toList();
+
       final order = order_model.Order(
         id: orderId,
-        userId: user.uid,
-        items: cartItems,
+        clientId: user.uid,
+        items: itemsMap,
         totalPrice: totalPrice,
         status: 'pending',
-        timestamp: DateTime.now(),
+        address: _selectedOrderType == 'delivery' ? _addressController.text.trim() : 'Restoranda',
         orderType: _selectedOrderType,
-        paymentMethod: _selectedPaymentMethod,
-        address: _selectedOrderType == 'delivery' ? _addressController.text.trim() : null,
         tableNumber: _selectedOrderType == 'dine-in' ? _tableNumber : null,
-        notes: _notesController.text.trim().isNotEmpty ? _notesController.text.trim() : null,
-        userPhone: _phoneController.text.trim(),
-        promoCode: _promoCodeController.text.trim().isNotEmpty ? _promoCodeController.text.trim().toUpperCase() : null,
-        discount: discountAmount,
-        deliveryFee: deliveryFee,
+        timestamp: Timestamp.now(),
       );
 
-      // Save order to Firestore
+      // Save order to Firestore with additional fields
       await FirebaseFirestore.instance
           .collection('orders')
           .doc(orderId)
-          .set(order.toFirestore());
+          .set({
+        ...order.toFirestore(),
+        'paymentMethod': _selectedPaymentMethod,
+        'userPhone': _phoneController.text.trim(),
+        'notes': _notesController.text.trim().isNotEmpty ? _notesController.text.trim() : null,
+        'promoCode': _promoCodeController.text.trim().isNotEmpty ? _promoCodeController.text.trim().toUpperCase() : null,
+        'discount': discountAmount,
+        'deliveryFee': deliveryFee,
+        'customerName': user.displayName ?? 'Unknown',
+      });
 
       // Clear cart
       if (mounted) {
@@ -174,14 +185,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> with SingleTickerProvid
 
       setState(() => _isProcessing = false);
 
-      // Navigate to success screen
+      // Show success dialog
       if (mounted) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => OrderSuccessScreen(orderId: orderId),
-          ),
-        );
+        _showSuccessDialog(orderId);
       }
     } catch (e) {
       setState(() => _isProcessing = false);
@@ -196,6 +202,62 @@ class _CheckoutScreenState extends State<CheckoutScreen> with SingleTickerProvid
         backgroundColor: color,
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      ),
+    );
+  }
+
+  void _showSuccessDialog(String orderId) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: const BoxDecoration(
+                color: Colors.green,
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(Icons.check, color: Colors.white, size: 60),
+            ),
+            const SizedBox(height: 24),
+            const Text(
+              'Buyurtma qabul qilindi!',
+              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 12),
+            Text(
+              'Buyurtma #${orderId.substring(0, 8).toUpperCase()}',
+              style: const TextStyle(fontSize: 16, color: Colors.grey),
+            ),
+            const SizedBox(height: 8),
+            const Text(
+              'Buyurtmangiz qabul qilindi va tez orada tayyorlanadi',
+              style: TextStyle(fontSize: 14, color: Colors.grey),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 24),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context); // Close dialog
+                  Navigator.pop(context); // Go back to previous screen
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFFFF6B35),
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                ),
+                child: const Text('OK', style: TextStyle(fontSize: 16)),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
