@@ -17,6 +17,8 @@ import 'blocs/recommendation_bloc.dart';
 import 'blocs/chat_bloc.dart';
 import 'l10n/app_localizations.dart';
 import 'l10n/language_provider.dart';
+import 'l10n/theme_provider.dart';
+import 'l10n/app_theme.dart';
 import 'screens/auth/login_screen.dart';
 import 'screens/client/client_home.dart';
 import 'screens/admin/admin_home.dart';
@@ -53,9 +55,10 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => LanguageProvider()),
+        ChangeNotifierProvider(create: (_) => ThemeProvider()),
       ],
-      child: Consumer<LanguageProvider>(
-        builder: (context, languageProvider, child) {
+      child: Consumer2<LanguageProvider, ThemeProvider>(
+        builder: (context, languageProvider, themeProvider, child) {
           return MultiBlocProvider(
             providers: [
               BlocProvider(
@@ -88,154 +91,9 @@ class MyApp extends StatelessWidget {
               ],
 
               // Theme
-              theme: ThemeData(
-                useMaterial3: true,
-                colorScheme: ColorScheme.fromSeed(
-                  seedColor: const Color(0xFFFF6B35),
-                  brightness: Brightness.light,
-                ),
-                primaryColor: const Color(0xFFFF6B35),
-                scaffoldBackgroundColor: const Color(0xFFF8F9FA),
-
-                // App Bar Theme
-                appBarTheme: const AppBarTheme(
-                  elevation: 0,
-                  centerTitle: true,
-                  backgroundColor: Colors.transparent,
-                  foregroundColor: Color(0xFF2D3142),
-                  systemOverlayStyle: SystemUiOverlayStyle.dark,
-                ),
-
-                // Card Theme
-                cardTheme: CardThemeData(
-                  elevation: 2,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  surfaceTintColor: Colors.white,
-                ),
-
-                // Input Decoration Theme
-                inputDecorationTheme: InputDecorationTheme(
-                  filled: true,
-                  fillColor: Colors.white,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide.none,
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: Colors.grey.shade200),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(
-                      color: Color(0xFFFF6B35),
-                      width: 2,
-                    ),
-                  ),
-                  errorBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: Colors.red),
-                  ),
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 16,
-                  ),
-                ),
-
-                // Elevated Button Theme
-                elevatedButtonTheme: ElevatedButtonThemeData(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFFF6B35),
-                    foregroundColor: Colors.white,
-                    elevation: 2,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 32,
-                      vertical: 16,
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    textStyle: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-
-                // Text Button Theme
-                textButtonTheme: TextButtonThemeData(
-                  style: TextButton.styleFrom(
-                    foregroundColor: const Color(0xFFFF6B35),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 12,
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                ),
-
-                // Icon Theme
-                iconTheme: const IconThemeData(
-                  color: Color(0xFF2D3142),
-                ),
-
-                // Bottom Navigation Bar Theme
-                bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-                  selectedItemColor: Color(0xFFFF6B35),
-                  unselectedItemColor: Colors.grey,
-                  showUnselectedLabels: true,
-                  type: BottomNavigationBarType.fixed,
-                  elevation: 8,
-                ),
-
-                // Text Theme
-                textTheme: const TextTheme(
-                  displayLarge: TextStyle(
-                    fontSize: 32,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF2D3142),
-                  ),
-                  displayMedium: TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF2D3142),
-                  ),
-                  displaySmall: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF2D3142),
-                  ),
-                  headlineMedium: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w600,
-                    color: Color(0xFF2D3142),
-                  ),
-                  titleLarge: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
-                    color: Color(0xFF2D3142),
-                  ),
-                  bodyLarge: TextStyle(
-                    fontSize: 16,
-                    color: Color(0xFF2D3142),
-                  ),
-                  bodyMedium: TextStyle(
-                    fontSize: 14,
-                    color: Color(0xFF5D6171),
-                  ),
-                ),
-
-                // Floating Action Button Theme
-                floatingActionButtonTheme: const FloatingActionButtonThemeData(
-                  backgroundColor: Color(0xFFFF6B35),
-                  foregroundColor: Colors.white,
-                  elevation: 4,
-                ),
-              ),
+              theme: AppTheme.lightTheme,
+              darkTheme: AppTheme.darkTheme,
+              themeMode: themeProvider.themeMode,
 
               home: BlocBuilder<AuthBloc, AuthState>(
                 builder: (context, state) {

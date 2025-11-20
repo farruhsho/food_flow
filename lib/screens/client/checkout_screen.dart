@@ -7,6 +7,7 @@ import '../../blocs/cart_event.dart';
 import '../../blocs/cart_state.dart';
 import '../../models/cart_item.dart';
 import '../../models/order.dart' as order_model;
+import 'order_success_screen.dart';
 
 class CheckoutScreen extends StatefulWidget {
   const CheckoutScreen({super.key});
@@ -185,9 +186,20 @@ class _CheckoutScreenState extends State<CheckoutScreen> with SingleTickerProvid
 
       setState(() => _isProcessing = false);
 
-      // Show success dialog
+      // Navigate to success screen
       if (mounted) {
-        _showSuccessDialog(orderId);
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => OrderSuccessScreen(
+              orderId: orderId,
+              totalAmount: totalPrice,
+              estimatedTime: _selectedOrderType == 'delivery'
+                  ? '30-40 daqiqa'
+                  : '20-25 daqiqa',
+            ),
+          ),
+        );
       }
     } catch (e) {
       setState(() => _isProcessing = false);
