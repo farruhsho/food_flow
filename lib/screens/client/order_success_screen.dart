@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart';
-import 'package:confetti/confetti.dart';
 import 'dart:math';
 
 class OrderSuccessScreen extends StatefulWidget {
@@ -24,7 +22,6 @@ class _OrderSuccessScreenState extends State<OrderSuccessScreen>
   late AnimationController _animationController;
   late Animation<double> _scaleAnimation;
   late Animation<double> _fadeAnimation;
-  late ConfettiController _confettiController;
 
   @override
   void initState() {
@@ -49,49 +46,20 @@ class _OrderSuccessScreenState extends State<OrderSuccessScreen>
       ),
     );
 
-    _confettiController = ConfettiController(
-      duration: const Duration(seconds: 3),
-    );
-
     _animationController.forward();
-    _confettiController.play();
   }
 
   @override
   void dispose() {
     _animationController.dispose();
-    _confettiController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      body: Stack(
-        children: [
-          // Confetti effect
-          Align(
-            alignment: Alignment.topCenter,
-            child: ConfettiWidget(
-              confettiController: _confettiController,
-              blastDirection: pi / 2,
-              maxBlastForce: 5,
-              minBlastForce: 2,
-              emissionFrequency: 0.05,
-              numberOfParticles: 50,
-              gravity: 0.3,
-              colors: const [
-                Color(0xFFFF6B35),
-                Colors.green,
-                Colors.blue,
-                Colors.yellow,
-                Colors.pink,
-              ],
-            ),
-          ),
-
-          SafeArea(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      body: SafeArea(
             child: Padding(
               padding: const EdgeInsets.all(24.0),
               child: Column(
@@ -290,8 +258,6 @@ class _OrderSuccessScreenState extends State<OrderSuccessScreen>
                 ],
               ),
             ),
-          ),
-        ],
       ),
     );
   }
