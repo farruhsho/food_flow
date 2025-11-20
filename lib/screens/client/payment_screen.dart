@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../../services/payment_service.dart';
 
 class PaymentScreen extends StatefulWidget {
@@ -54,24 +55,49 @@ class _PaymentScreenState extends State<PaymentScreen> with SingleTickerProvider
     try {
       String? transactionId;
 
+      // Get user info from Firebase
+      final user = FirebaseAuth.instance.currentUser;
+      if (user == null) throw Exception('User not authenticated');
+
+      final userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .get();
+
+      final userData = userDoc.data();
+      final userName = userData?['name'] ?? 'Unknown';
+      final userPhone = userData?['phone'] ?? '';
+
       switch (widget.paymentMethod.toLowerCase()) {
         case 'payme':
-          transactionId = await _paymentService.processPaymePayment(
-            widget.orderId,
-            widget.amount,
+          final result = await _paymentService.processPaymePayment(
+            orderId: widget.orderId,
+            amount: widget.amount,
+            userId: user.uid,
+            userName: userName,
+            userPhone: userPhone,
           );
+          transactionId = result['transactionId'];
           break;
         case 'click':
-          transactionId = await _paymentService.processClickPayment(
-            widget.orderId,
-            widget.amount,
+          final result = await _paymentService.processClickPayment(
+            orderId: widget.orderId,
+            amount: widget.amount,
+            userId: user.uid,
+            userName: userName,
+            userPhone: userPhone,
           );
+          transactionId = result['transactionId'];
           break;
         case 'uzcard':
-          transactionId = await _paymentService.processUzcardPayment(
-            widget.orderId,
-            widget.amount,
+          final result = await _paymentService.processUzcardPayment(
+            orderId: widget.orderId,
+            amount: widget.amount,
+            userId: user.uid,
+            userName: userName,
+            userPhone: userPhone,
           );
+          transactionId = result['transactionId'];
           break;
         case 'card':
         case 'cash':

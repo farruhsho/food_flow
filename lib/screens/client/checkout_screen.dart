@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_firestore/cloud_firestore.dart' hide Order;
 import 'package:firebase_auth/firebase_auth.dart';
 import '../../blocs/cart_bloc.dart';
 import '../../blocs/cart_event.dart';
 import '../../blocs/cart_state.dart';
 import '../../models/cart_item.dart';
-import '../../models/order.dart';
+import '../../models/order.dart' as order_model;
 import 'order_success_screen.dart';
 
 class CheckoutScreen extends StatefulWidget {
@@ -143,7 +143,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> with SingleTickerProvid
 
       final orderId = FirebaseFirestore.instance.collection('orders').doc().id;
 
-      final order = Order(
+      final order = order_model.Order(
         id: orderId,
         userId: user.uid,
         items: cartItems,
@@ -169,7 +169,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> with SingleTickerProvid
 
       // Clear cart
       if (mounted) {
-        context.read<CartBloc>().add(const ClearCart());
+        context.read<CartBloc>().add(ClearCart());
       }
 
       setState(() => _isProcessing = false);
@@ -469,18 +469,25 @@ class _CheckoutScreenState extends State<CheckoutScreen> with SingleTickerProvid
           return ListTile(
             leading: ClipRRect(
               borderRadius: BorderRadius.circular(8),
-              child: Image.network(
-                item.imageUrl,
-                width: 50,
-                height: 50,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) => Container(
-                  width: 50,
-                  height: 50,
-                  color: Colors.grey[200],
-                  child: const Icon(Icons.restaurant, color: Colors.grey),
-                ),
-              ),
+              child: item.imageUrl != null
+                  ? Image.network(
+                      item.imageUrl!,
+                      width: 50,
+                      height: 50,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) => Container(
+                        width: 50,
+                        height: 50,
+                        color: Colors.grey[200],
+                        child: const Icon(Icons.restaurant, color: Colors.grey),
+                      ),
+                    )
+                  : Container(
+                      width: 50,
+                      height: 50,
+                      color: Colors.grey[200],
+                      child: const Icon(Icons.restaurant, color: Colors.grey),
+                    ),
             ),
             title: Text(item.name, style: const TextStyle(fontWeight: FontWeight.w600)),
             subtitle: Text('${item.quantity} x ${item.price.toStringAsFixed(0)} so\'m'),
